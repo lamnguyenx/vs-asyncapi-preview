@@ -52,11 +52,13 @@ export function openAsyncAPI(context: vscode.ExtensionContext, uri: vscode.Uri) 
     vscode.window.createWebviewPanel('asyncapi-preview', '', vscode.ViewColumn.Two, {
       enableScripts: true,
       retainContextWhenHidden: true,
+      enableFindWidget: true,
       localResourceRoots,
     });
 
   panel.title = basename(uri.fsPath);
   panel.webview.html = getWebviewContent(context, panel.webview, uri, position);
+  panel.reveal();
 
   panel.webview.onDidReceiveMessage(
     message => {
@@ -66,7 +68,12 @@ export function openAsyncAPI(context: vscode.ExtensionContext, uri: vscode.Uri) 
             x: message.scrollX,
             y: message.scrollY
           };
+          break;
 
+        }
+        case 'ready': {
+          panel.reveal();
+          break;
         }
       }
     },
@@ -284,7 +291,11 @@ function getWebviewContent(context: vscode.ExtensionContext, webview: vscode.Web
         });
 
         window.addEventListener("load", (event) => {
-          setTimeout(()=>{window.scrollBy('${position.x}','${position.y}')},1000)
+          vscode.postMessage({ type: 'ready' });
+          setTimeout(()=>{
+            window.focus();
+            window.scrollBy('${position.x}','${position.y}')
+          },1000)
         });
 
       </script>
