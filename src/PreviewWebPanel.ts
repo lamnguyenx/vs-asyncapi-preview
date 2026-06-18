@@ -49,7 +49,7 @@ export function openAsyncAPI(context: vscode.ExtensionContext, uri: vscode.Uri) 
   }
   const panel: vscode.WebviewPanel =
     openAsyncapiFiles[uri.fsPath] ||
-    vscode.window.createWebviewPanel('asyncapi-preview', '', vscode.ViewColumn.Two, {
+    vscode.window.createWebviewPanel('asyncapi-preview', '', vscode.ViewColumn.Active, {
       enableScripts: true,
       retainContextWhenHidden: true,
       enableFindWidget: true,
